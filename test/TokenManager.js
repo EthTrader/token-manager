@@ -107,7 +107,7 @@ describe("TokenManager", function () {
       const BATCH_AMOUNT = await tokenManager.BATCH_AMOUNT()
       const multisigBalance = await donut.balanceOf(multisigAddress)
 
-      await expect(tokenManager.connect(carl).mintBatch()).to.be.revertedWith("You aren't the multisig");
+      await expect(tokenManager.connect(carl).mintBatch()).to.be.revertedWith("NOT_MULTISIG");
     });
 
     it("Should allow mint donut batch by multisig", async function(){
@@ -116,6 +116,10 @@ describe("TokenManager", function () {
       await tokenManager.connect(multisig).mintBatch()
 
       expect(await donut.balanceOf(multisigAddress)).to.equal(BATCH_AMOUNT + multisigBalance);
+    });
+
+    it("Should disallow mint donut batch inside interval", async function(){
+      await expect(tokenManager.connect(multisig).mintBatch()).to.be.revertedWith("TOO_SOON");
     });
 
   })
