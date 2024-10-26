@@ -122,6 +122,11 @@ describe("TokenManager", function () {
       await expect(tokenManager.connect(multisig).mintBatch()).to.be.revertedWith("TOO_SOON");
     });
 
+    it("Should disable change donut controller", async function(){
+      await tokenManager.connect(multisig).disableChangeDonutController();
+      await expect(tokenManager.connect(multisig).changeDonutController(tokenManager.target)).to.be.revertedWith("NOT_ALLOWED");
+    });
+
   })
 
 })

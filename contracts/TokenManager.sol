@@ -12,6 +12,7 @@ contract TokenManager is TokenController {
     uint public constant BATCH_AMOUNT = 7000000e18;
     uint public constant BATCH_INTERVAL = 52 weeks;
     uint public lastBatch;
+    bool public allowChangeDonutController = true;
 
     modifier multisig {
         require(msg.sender == MULTISIG, "NOT_MULTISIG");
@@ -19,7 +20,12 @@ contract TokenManager is TokenController {
     }
 
     function changeDonutController(address newController) public multisig {
+        require(allowChangeDonutController, "NOT_ALLOWED");
         DONUT.changeController(newController);
+    }
+
+    function disableChangeDonutController() public multisig {
+        allowChangeDonutController = false;
     }
 
     function mintBatch() public multisig {
