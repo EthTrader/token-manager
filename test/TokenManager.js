@@ -20,6 +20,8 @@ const tokenManagerProxyAddress = "0x3D361F670C3099627e7e9Ae9c3d6644B0DDF8f69";
 const baseNamespace = id("base");
 const tokenManagerAppId = "0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f";//id("token-manager.aragonpm.eth");
 
+const ANNUAL_MINT_AMOUNT = "20880000";
+
 describe("TokenManager", function () {
   async function setup() {
     await impersonateAccount(vitalikAddress);
@@ -110,8 +112,8 @@ describe("TokenManager", function () {
       await expect(tokenManager.connect(carl).mintBatch()).to.be.revertedWith("NOT_MULTISIG");
     });
 
-    it("Should allow mint donut batch by multisig", async function(){
-      const BATCH_AMOUNT = await tokenManager.BATCH_AMOUNT()
+    it(`Should mint ${ANNUAL_MINT_AMOUNT} donut batch by multisig`, async function(){
+      const BATCH_AMOUNT = parseEther(ANNUAL_MINT_AMOUNT)
       const multisigBalance = await donut.balanceOf(multisigAddress)
       await tokenManager.connect(multisig).mintBatch()
 
