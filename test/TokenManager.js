@@ -19,6 +19,7 @@ const kernelAddress = "0x57EBE61f5f8303AD944136b293C1836B3803b4c0";
 const tokenManagerProxyAddress = "0x3D361F670C3099627e7e9Ae9c3d6644B0DDF8f69";
 const baseNamespace = id("base");
 const tokenManagerAppId = "0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f";
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 describe("TokenManager", function () {
   async function setup() {
@@ -49,8 +50,7 @@ describe("TokenManager", function () {
     await kernel.setApp(baseNamespace, tokenManagerAppId, tokenManager.target);
     // // change donut controller from the Aragon proxy contract to direct Token Manager contract
     const tokenManagerProxy = await ethers.getContractAt(TokenManagerABI, tokenManagerProxyAddress, multisig);
-    await tokenManagerProxy.changeDonutController(tokenManager.target);
-    return {tokenManager, donut, vitalik, carl, multisig}
+    return {tokenManagerProxy, tokenManager, donut, vitalik, carl, multisig}
   }
 
   describe("Upgrade token manager app", function (){
@@ -74,16 +74,20 @@ describe("TokenManager", function () {
 
   describe("Change Controller", function (){
 
-    let tokenManager, donut, vitalik, carl, multisig
+    let tokenManagerProxy, tokenManager, donut, vitalik, carl, multisig
 
     before( async () => {
-      ({tokenManager, donut, vitalik, carl, multisig} = await finalState());
+      ({tokenManagerProxy, tokenManager, donut, vitalik, carl, multisig} = await finalState());
     })
 
-    it("Should change donut controller", async function () {
-      const donutController = await donut.controller();
+    it("Should disallow change donut controller to 0x", async function() {
+      await expect(tokenManagerProxy.changeDonutController(ZERO_ADDRESS)).to.be.revertedWith("INVALID_NEW_CONTROLLER");;
+    });
 
-      expect(donutController).to.equal(tokenManager.target);
+    it("Should change donut controller", async function () {
+      await tokenManagerProxy.changeDonutController(tokenManager.target);
+
+      expect(await donut.controller()).to.equal(tokenManager.target);
     });
 
     it("Should allow donut approvals", async function(){

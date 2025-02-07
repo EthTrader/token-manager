@@ -24,6 +24,7 @@ contract TokenManager is TokenController {
 
     function changeDonutController(address newController) public multisig {
         require(allowChangeDonutController, "NOT_ALLOWED");
+        require(newController != address(0), "INVALID_NEW_CONTROLLER");
         DONUT.changeController(newController);
     }
 
