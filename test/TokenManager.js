@@ -18,7 +18,7 @@ const donutDeployerAddress = "0x459f5ad95D9faD4034c5623D5FaA59E456d1c4ed";
 const kernelAddress = "0x57EBE61f5f8303AD944136b293C1836B3803b4c0";
 const tokenManagerProxyAddress = "0x3D361F670C3099627e7e9Ae9c3d6644B0DDF8f69";
 const baseNamespace = id("base");
-const tokenManagerAppId = "0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f";//id("token-manager.aragonpm.eth");
+const tokenManagerAppId = "0x6b20a3010614eeebf2138ccec99f028a61c811b3b1a3343b6ff635985c75c91f";
 
 describe("TokenManager", function () {
   async function setup() {
